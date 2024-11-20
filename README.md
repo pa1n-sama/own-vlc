@@ -20,7 +20,7 @@ Welcome to **VFW (VLC From Wish)**! This app is your slightly janky, less polish
 1. Clone the repository:
    ```bash
    git clone https://github.com/username/VFW.git
-   cd VFW
+   cd VFW/main
    ```
 2. run the run.sh script:
    ```bash

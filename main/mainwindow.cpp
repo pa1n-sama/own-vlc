@@ -22,33 +22,33 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
 
     //elements definition
 
-    player = new QMediaPlayer;
-    audio = new QAudioOutput;
-    video = new QVideoWidget;
-    videoslider = new QSlider(Qt::Horizontal);
-    mainwidget = new QWidget;
-    mainlayout = new QVBoxLayout;
-    firstlayout = new QHBoxLayout;
-    videolayout = new QVBoxLayout;
-    thirdlayout = new QHBoxLayout;
-    fourthlayout = new QHBoxLayout;
-    currenttimer = new QLabel("--:--:--");
-    totaltimer = new QLabel("--:--:--");
+    player = new QMediaPlayer(this);
+    audio = new QAudioOutput(this);
+    video = new QVideoWidget(this);
+    videoslider = new QSlider(Qt::Horizontal,this);
+    mainwidget = new QWidget(this);
+    mainlayout = new QVBoxLayout(this);
+    firstlayout = new QHBoxLayout(this);
+    videolayout = new QVBoxLayout(this);
+    thirdlayout = new QHBoxLayout(this);
+    fourthlayout = new QHBoxLayout(this);
+    currenttimer = new QLabel("--:--:--",this);
+    totaltimer = new QLabel("--:--:--",this);
     
     //setting firstlayout toolbuttons with it's actions
 
     int counter = 0;
     for(int i=0;i<firstlayoutbuttons.size();i++){
-        QToolButton *button = new QToolButton;
+        QToolButton *button = new QToolButton(this);
         button->setPopupMode(QToolButton::InstantPopup);
         button->setText(firstlayoutbuttons[i]);
         button->setObjectName(firstlayoutbuttons[i]);
         connect(button,&QPushButton::clicked,[this,i](){
             firstlayoutclick(i);
         });
-        QMenu *menu = new QMenu; 
+        QMenu *menu = new QMenu(this); 
         while(counter<actionslist.size()){
-            QAction *action = new QAction;
+            QAction *action = new QAction(this);
             action->setObjectName(actionslist[counter]);
             action->setText(actionslist[counter]);
             connect(action,&QAction::triggered,[this,counter](){
@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     //setting fourthlayout pushbuttons
 
     for(int j=0;j<mcbuttons.size();j++){
-        QPushButton *button = new QPushButton;
+        QPushButton *button = new QPushButton(this);
         button->setObjectName(mcbuttons[j]);
         QPixmap pix("cache/icons/"+mcbuttons[j]+".png");
         button->setIcon(pix);

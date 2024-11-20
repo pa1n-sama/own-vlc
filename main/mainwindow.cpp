@@ -1,4 +1,3 @@
-#include<nlohmann/json.hpp>
 #include <iomanip>
 #include <iostream>
 #include <mainwindow.h>
@@ -14,8 +13,6 @@
 #include <QLabel>
 #include <QKeyEvent>
 #include <QFileDialog>
-
-using json = nlohmann::json;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     this->setFocus();

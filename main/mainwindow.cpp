@@ -243,15 +243,15 @@ void MainWindow::fourthlayoutclick(int buttonindex){
             if(rep==0){
                 //repeat playlist
                 sb->setIcon(QPixmap("cache/icons/BRepeatingone.png"));
-                rep=1;
+                rep=PlaylistRepeat;
             }else if (rep==1){
                 //repeating one video
                 sb->setIcon(QPixmap("cache/icons/BSuffle.png"));
-                rep=2;
+                rep=VideoRepeat;
             }else if (rep==2){
                 //shuffle
                 sb->setIcon(QPixmap("cache/icons/BRepeating.png"));
-                rep=0;
+                rep=Shuffle;
             }
     }
 }
@@ -324,7 +324,7 @@ void MainWindow::setsliderposition(qint64 position){
     //if the video is finished
     else if (position==player->duration()){
         //if the reloading button is in the "reload full playlist" mode
-        if(rep==0){
+        if(rep==PlaylistRepeat){
             if(videoindex==playlist.size()-1){
                 videoindex = 0;
             }else{
@@ -334,23 +334,18 @@ void MainWindow::setsliderposition(qint64 position){
         }
 
         //if the reloading button is in the "reload one video" mode
-        else if (rep==1){
+        else if (rep==VideoRepeat){
             player->setPosition(0);
             player->stop();
             player->play();
         }
 
         //if the reloading button is in the "random video" mode
-        else{
+        else if (rep==Shuffle){
             videoindex = rand()%playlist.size();
             mediaplayer("play a list");
         }
         videoslider->setValue(0);
     }
-
-}
-
-
-MainWindow::~MainWindow(){
 
 }

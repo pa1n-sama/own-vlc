@@ -22,13 +22,13 @@ Welcome to **VFW (VLC From Wish)**! This app is your slightly janky, less polish
    git clone https://github.com/username/VFW.git
    cd VFW
    ```
-2. Build it using `qmake` and `make`:
+2. run the run.sh script:
    ```bash
-   qmake
-   make
+   bash run.sh
    ```
 3. Run the application:
    ```bash
+   cd build
    ./VFW
    ```
 

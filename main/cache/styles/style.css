@@ -1,0 +1,30 @@
+QWidget{
+    background:  #101010;
+    color:white;
+}
+
+QHBoxLayout{
+    background-color:red;
+}
+QToolButton{
+    border: none ;
+    color:#ffffff;
+}
+QToolButton:hover{
+    background-color: #1e1e1e;
+}
+QVideoWidget{
+    background-color:red;
+}
+QLabel{
+    color:white;
+}
+QPushButton{
+    min-width:30px;
+    min-height:30px;
+    max-width: 30px;
+    max-height: 30px;
+}
+QAction:hover{
+    background-color:#363636;
+}

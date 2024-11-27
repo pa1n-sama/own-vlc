@@ -24,11 +24,11 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     video = new QVideoWidget(this);
     videoslider = new QSlider(Qt::Horizontal,this);
     mainwidget = new QWidget(this);
-    mainlayout = new QVBoxLayout(this);
-    firstlayout = new QHBoxLayout(this);
-    videolayout = new QVBoxLayout(this);
-    thirdlayout = new QHBoxLayout(this);
-    fourthlayout = new QHBoxLayout(this);
+    mainlayout = new QVBoxLayout();
+    firstlayout = new QHBoxLayout();
+    videolayout = new QVBoxLayout();
+    thirdlayout = new QHBoxLayout();
+    fourthlayout = new QHBoxLayout();
     currenttimer = new QLabel("--:--:--",this);
     totaltimer = new QLabel("--:--:--",this);
     

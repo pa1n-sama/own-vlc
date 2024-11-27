@@ -204,10 +204,12 @@ void MainWindow::fourthlayoutclick(int buttonindex){
         //if fullscreen button is clicked
         case 4:
             {if(fullscreened){
+                this->showNormal();
                 currenttimer->show();
                 totaltimer->show();
                 videoslider->show();
             }else{
+                this->showFullScreen();
                 currenttimer->hide();
                 totaltimer->hide();
                 videoslider->hide();

@@ -242,18 +242,18 @@ void MainWindow::fourthlayoutclick(int buttonindex){
         //if reloading behavior is clicked 
         case 6:
             QPushButton * sb = this->findChild<QPushButton*>("BRepeating");
-            if(rep==0){
+            if(rep==PlaylistRepeat){
                 //repeat playlist
                 sb->setIcon(QPixmap("cache/icons/BRepeatingone.png"));
-                rep=PlaylistRepeat;
-            }else if (rep==1){
+                rep=VideoRepeat;
+            }else if (rep==VideoRepeat){
                 //repeating one video
                 sb->setIcon(QPixmap("cache/icons/BSuffle.png"));
-                rep=VideoRepeat;
-            }else if (rep==2){
+                rep=Shuffle;
+            }else if (rep==Shuffle){
                 //shuffle
                 sb->setIcon(QPixmap("cache/icons/BRepeating.png"));
-                rep=Shuffle;
+                rep=PlaylistRepeat;
             }
     }
 }

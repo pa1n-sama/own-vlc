@@ -125,7 +125,7 @@ void MainWindow::mediaplayer(QString url){
 
     player->setVideoOutput(video);
     player->setAudioOutput(audio);
-    audio->setVolume(false);
+    audio->setVolume(true);
     video->show();
     player->play();
 

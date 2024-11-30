@@ -61,9 +61,10 @@ private:
     QSlider *volumeslider;
     QLabel *currenttimer;
     QLabel *totaltimer;
-
+    qreal oldvolume;
+    
     std::vector<QUrl> playlist;
-    QList<QString> mcbuttons = {"BPause","BBack","BStop","BNext","BFullscreen","BPlaylist","BRepeating"};
+    QList<QString> mcbuttons = {"BPause","BBack","BStop","BNext","BFullscreen","BPlaylist","BRepeating","BVolumeFull"};
     QList<QString> firstlayoutbuttons = {"Media","Playback","Audio","Video","Subtitle","Tools","View","Help"};
     QList<QString> actionslist = {"open file","open folder"};
 

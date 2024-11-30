@@ -16,9 +16,9 @@
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     this->setFocus();
-
+    this->resize(750,500);
+    
     //elements definition
-
     player = new QMediaPlayer(this);
     audio = new QAudioOutput(this);
     video = new QVideoWidget(this);
@@ -33,8 +33,11 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     totaltimer = new QLabel("--:--:--");
     volumeslider = new QSlider(Qt::Horizontal);
     volumeslider->setObjectName("volumeslider");
+
+    //align the buttons for the style
     firstlayout->setAlignment(Qt::AlignLeft);
     fourthlayout->setAlignment(Qt::AlignLeft);
+
     //setting firstlayout toolbuttons with it's actions
     int counter = 0;
     for(int i=0;i<firstlayoutbuttons.size();i++){
@@ -66,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
         //adding space for the style 
         if(j==1 || j==4){
             fourthlayout->addSpacing(20);
+        }else if(j==7){
+            //adding space for the style between buttons and volume parameters 
+            fourthlayout->addStretch(100);
         }
         QPushButton *button = new QPushButton(this);
         button->setObjectName(mcbuttons[j]);
@@ -77,8 +83,6 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
         });
         fourthlayout->addWidget(button);
     }
-    //adding space for the style between buttons and volume slider 
-    fourthlayout->addStretch(100);
 
     //adding volumeslider to the fourthlayout
     fourthlayout->addWidget(volumeslider);
@@ -114,22 +118,24 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
 void MainWindow::mediaplayer(QString url){
 
     //if there is no video to play a black image will play (blackscreen)
-    
     if(videoindex>playlist.size()||url=="blackscreen") {
         player->setSource(QUrl("blackscreen"));
         currenttimer->setText("--:--:--");
-        totaltimer ->setText("--:--:--");}
+        totaltimer ->setText("--:--:--");
+        videoslider->setStyleSheet("QSlider::handle{background-color: #1e1e1e;}");
+        }
     
     //if pass "play a list" as an argunent a video from the playlist will play
-
     else if(url=="play a list"){
         player->setSource(QUrl(playlist[videoindex]));
+        videoslider->setStyleSheet("QSlider::handle{background-color: #0f353a;}");
         }
     
     //if we pass a url, a video with the url will play and the playlist will be cleared
-
     else{
-        player->setSource(QUrl(url));}
+        player->setSource(QUrl(url));
+        videoslider->setStyleSheet("QSlider::handle{background-color: #0f353a;}");
+        }
 
     //mediaplayer setup (sound and video widget)
 
@@ -137,6 +143,7 @@ void MainWindow::mediaplayer(QString url){
     player->setAudioOutput(audio);
     audio->setVolume(0.5);
     volumeslider->setRange(0,1000);
+    volumeslider->setSliderPosition(500);
     video->show();
     player->play();
 
@@ -250,11 +257,12 @@ void MainWindow::fourthlayoutclick(int buttonindex){
                 }
             }
             fullscreened=!fullscreened;
-            break;}
+            break;
+        }
         
         //if reloading behavior is clicked 
         case 6:
-            QPushButton * sb = this->findChild<QPushButton*>("BRepeating");
+            {QPushButton * sb = this->findChild<QPushButton*>("BRepeating");
             if(rep==PlaylistRepeat){
                 //repeat playlist
                 sb->setIcon(QPixmap("cache/icons/BRepeatingone.png"));
@@ -268,6 +276,18 @@ void MainWindow::fourthlayoutclick(int buttonindex){
                 sb->setIcon(QPixmap("cache/icons/BRepeating.png"));
                 rep=PlaylistRepeat;
             }
+            break;
+        }
+        
+        case 7:
+            {if (audio->volume()){
+                oldvolume=audio->volume();
+                audio->setVolume(0);
+            }else{
+                audio->setVolume(oldvolume);
+            }
+            break;
+        }
     }
 }
 
@@ -278,6 +298,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
        fourthlayoutclick(4);
     }else if(event->key()  == Qt::Key_F){
        fourthlayoutclick(4);
+    }else if(event->key()  == Qt::Key_M){
+       fourthlayoutclick(7);
     }else if(event->key()==Qt::Key_Space){
        fourthlayoutclick(0);
     }else if(event->key()==Qt::Key_Right){
@@ -373,5 +395,21 @@ void MainWindow::slidertovolume(int position){
     audio->setVolume(position/1000.0);
 }
 void MainWindow::volumetoslider(qreal position){
+    QPushButton *searchbutton = this->findChild<QPushButton*>("BVolumeFull");
+
+    //changing the volum button icon basing on the volume state
+    if(position*1000 == 0){
+        searchbutton->setIcon(QPixmap("cache/icons/BMute.png"));
+
+    }else if (position*1000<=333 && position*1000>0){
+        searchbutton->setIcon(QPixmap("cache/icons/BVolumeLow.png"));
+
+    }else if(position*1000>=333 && position*1000<=666){
+        searchbutton->setIcon(QPixmap("cache/icons/BVolumeMid.png"));
+
+    }else if(position*1000>=666){
+        searchbutton->setIcon(QPixmap("cache/icons/BVolumeFull.png"));
+
+    }
     volumeslider->setSliderPosition(static_cast<int>(position*1000));
 }

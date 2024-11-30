@@ -25,7 +25,49 @@ QPushButton{
 QAction:hover{
     background-color:#363636;
 }
+
+QSlider{
+    border-radius: 20px;
+}
+
+/*video slider*/
+QSlider::sub-page:horizontal {
+    background: #0f353a;
+    border-radius: 5px;
+}
+
+QSlider::groove:horizontal{
+    background: #1e1e1e;
+    height: 5px;
+}
+QSlider::handle::pressed{
+    background-color: #484949;
+
+}
+QSlider::handle{
+    background-color: #0f353a;
+    width:10px;
+}   
+
+/*slider volume*/
 QSlider#volumeslider{
     max-width: 150px;
+}
 
+QSlider::sub-page:horizontal#volumeslider {
+    background: #484949;
+    border-radius: 5px;
+}
+
+QSlider::groove:horizontal#volumeslider {
+    background: #1e1e1e;
+    border-radius: 5px;
+    height: 20px;
+    border-radius: 30px;
+}
+
+QSlider#volumeslider::handle{
+    background-color: #484949;
+    width:5px;
+    border-radius: 30px;
 }

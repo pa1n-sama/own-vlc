@@ -3,19 +3,16 @@ QWidget{
     color:white;
 }
 
-QHBoxLayout{
-    background-color:red;
-}
 QToolButton{
-    border: none ;
+    margin-left:30px;
+    border:solid;
     color:#ffffff;
-}
+    background-color:#0e0e0e;
+    }
 QToolButton:hover{
     background-color: #1e1e1e;
 }
-QVideoWidget{
-    background-color:red;
-}
+
 QLabel{
     color:white;
 }
@@ -27,4 +24,8 @@ QPushButton{
 }
 QAction:hover{
     background-color:#363636;
+}
+QSlider#volumeslider{
+    max-width: 150px;
+
 }

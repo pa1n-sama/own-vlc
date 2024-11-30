@@ -22,18 +22,20 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     player = new QMediaPlayer(this);
     audio = new QAudioOutput(this);
     video = new QVideoWidget(this);
-    videoslider = new QSlider(Qt::Horizontal,this);
+    videoslider = new QSlider(Qt::Horizontal);
     mainwidget = new QWidget(this);
     mainlayout = new QVBoxLayout();
     firstlayout = new QHBoxLayout();
     videolayout = new QVBoxLayout();
     thirdlayout = new QHBoxLayout();
     fourthlayout = new QHBoxLayout();
-    currenttimer = new QLabel("--:--:--",this);
-    totaltimer = new QLabel("--:--:--",this);
-    
+    currenttimer = new QLabel("--:--:--");
+    totaltimer = new QLabel("--:--:--");
+    volumeslider = new QSlider(Qt::Horizontal);
+    volumeslider->setObjectName("volumeslider");
+    firstlayout->setAlignment(Qt::AlignLeft);
+    fourthlayout->setAlignment(Qt::AlignLeft);
     //setting firstlayout toolbuttons with it's actions
-
     int counter = 0;
     for(int i=0;i<firstlayoutbuttons.size();i++){
         QToolButton *button = new QToolButton(this);
@@ -60,8 +62,11 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     }
 
     //setting fourthlayout pushbuttons
-
     for(int j=0;j<mcbuttons.size();j++){
+        //adding space for the style 
+        if(j==1 || j==4){
+            fourthlayout->addSpacing(20);
+        }
         QPushButton *button = new QPushButton(this);
         button->setObjectName(mcbuttons[j]);
         QPixmap pix("cache/icons/"+mcbuttons[j]+".png");
@@ -72,18 +77,23 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
         });
         fourthlayout->addWidget(button);
     }
+    //adding space for the style between buttons and volume slider 
+    fourthlayout->addStretch(100);
+
+    //adding volumeslider to the fourthlayout
+    fourthlayout->addWidget(volumeslider);
+
+    //connecting volume slider and the audiooutput volume
+    connect(volumeslider,&QSlider::sliderMoved,this,&MainWindow::slidertovolume);
+    connect(audio,&QAudioOutput::volumeChanged,this,&MainWindow::volumetoslider);
 
     //connecting the slider and media with there logic
-
     connect(player,&QMediaPlayer::positionChanged,this,&MainWindow::setsliderposition);
     connect(player,&QMediaPlayer::durationChanged,this,&MainWindow::setsliderrange);
     connect(videoslider,&QSlider::sliderMoved,this,&MainWindow::mediaposition);
 
     //setting videowidget parametres
-
     video->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    video->setMinimumSize(854,480);
-    video->setMaximumSize(1920,1080);
     
     //adding widgets to there layouts and the layous to the central widget
     videolayout->addWidget(video);
@@ -125,7 +135,8 @@ void MainWindow::mediaplayer(QString url){
 
     player->setVideoOutput(video);
     player->setAudioOutput(audio);
-    audio->setVolume(true);
+    audio->setVolume(0.5);
+    volumeslider->setRange(0,1000);
     video->show();
     player->play();
 
@@ -205,11 +216,13 @@ void MainWindow::fourthlayoutclick(int buttonindex){
         case 4:
             {if(fullscreened){
                 this->showNormal();
+                volumeslider->show();
                 currenttimer->show();
                 totaltimer->show();
                 videoslider->show();
             }else{
                 this->showFullScreen();
+                volumeslider->hide();
                 currenttimer->hide();
                 totaltimer->hide();
                 videoslider->hide();
@@ -273,8 +286,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         player->setPosition(player->position()-5000);
     }else if(event->key()==Qt::Key_Up){
         audio->setVolume(audio->volume()+0.1);
+        volumeslider->setSliderPosition(volumeslider->sliderPosition()+0.1);
     }else if(event->key()==Qt::Key_Down){
         audio->setVolume(audio->volume()-0.1);
+        volumeslider->setSliderPosition(volumeslider->sliderPosition()-0.1);
     }
 }
 
@@ -350,4 +365,13 @@ void MainWindow::setsliderposition(qint64 position){
         videoslider->setValue(0);
     }
 
+}
+
+
+//volume logic 
+void MainWindow::slidertovolume(int position){
+    audio->setVolume(position/1000.0);
+}
+void MainWindow::volumetoslider(qreal position){
+    volumeslider->setSliderPosition(static_cast<int>(position*1000));
 }

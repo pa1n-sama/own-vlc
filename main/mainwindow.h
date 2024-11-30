@@ -37,7 +37,8 @@ public:
     void keyPressEvent(QKeyEvent *event)override;
     void mediaplayer(QString url="blackscreen");
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
-
+    void slidertovolume(int position);
+    void volumetoslider(qreal position);
 private:
     bool paused = false;
     bool fullscreened = false;
@@ -57,6 +58,7 @@ private:
     QAudioOutput *audio;
     QVideoWidget *video;
     QSlider *videoslider;
+    QSlider *volumeslider;
     QLabel *currenttimer;
     QLabel *totaltimer;
 

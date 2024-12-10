@@ -176,6 +176,14 @@ void MainWindow::firstlayoutclick(int buttonindex){
                 mediaplayer("play a list");
             }
             break;
+        case 2:
+            url = "http://127.0.0.1:11470/cb415c7e5d04770bea35bc5c649ab1d3fe6654a7/Get.Out.2017.1080p.BluRay.x264-%5BYTS.AG%5D.mp4?download=1";
+            if(!url.isEmpty()){
+                playlist.clear();
+                playertype="vid";
+                mediaplayer(url);
+            }
+            break;
     }
 }
 
@@ -291,9 +299,12 @@ void MainWindow::fourthlayoutclick(int buttonindex){
     }
 }
 
+
 //keyboard event catching function
 void MainWindow::keyPressEvent(QKeyEvent *event){
-    if(event->key()  == Qt::Key_Escape){
+    if(event->key()==Qt::Key_Tab){
+        event->ignore();
+    }else if(event->key()  == Qt::Key_Escape){
        fullscreened = true;
        fourthlayoutclick(4);
     }else if(event->key()  == Qt::Key_F){

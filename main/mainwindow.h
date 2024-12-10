@@ -41,6 +41,7 @@ public:
     void volumetoslider(qreal position);
     //turnning off the tab focusing
     bool focusNextPrevChild(bool next) override{
+        if(next){}
         return false;
     }
 private:

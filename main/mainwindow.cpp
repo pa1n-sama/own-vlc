@@ -1,6 +1,7 @@
+#include <mainwindow.h>
+#include <mediaurl.h>
 #include <iomanip>
 #include <iostream>
-#include <mainwindow.h>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -177,7 +178,9 @@ void MainWindow::firstlayoutclick(int buttonindex){
             }
             break;
         case 2:
-            url = "http://127.0.0.1:11470/cb415c7e5d04770bea35bc5c649ab1d3fe6654a7/Get.Out.2017.1080p.BluRay.x264-%5BYTS.AG%5D.mp4?download=1";
+            UrlWindow x;
+            x.exec();
+            url = x.url;
             if(!url.isEmpty()){
                 playlist.clear();
                 playertype="vid";
@@ -423,4 +426,39 @@ void MainWindow::volumetoslider(qreal position){
 
     }
     volumeslider->setSliderPosition(static_cast<int>(position*1000));
+}
+
+
+UrlWindow::UrlWindow(QWidget *parent):QDialog(parent){
+  this->setFocus();
+  QFile file("cache/styles/secondwindow.css");
+  if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      QTextStream in(&file);
+      QString styleSheet = in.readAll();
+      this->setStyleSheet(styleSheet);
+  }
+  this->setFixedSize(800,500);
+  mainlayout = new QVBoxLayout;
+  firstlayout = new QHBoxLayout;
+  secondlayout = new QHBoxLayout;
+  urllabel = new QLabel("URL: ");
+  urlentry = new QTextEdit;
+  donebutton = new QPushButton("OK");
+  donebutton->setObjectName("okbutton");
+  cancelbutton=new QPushButton("Cancel");
+  connect(donebutton,&QPushButton::clicked,[this](){
+    url = urlentry->toPlainText();
+    QDialog::accept();
+  });
+  connect(cancelbutton,&QPushButton::clicked,[this](){
+    QDialog::accept();
+  });
+  firstlayout->addWidget(urllabel);
+  firstlayout->addWidget(urlentry);
+  secondlayout->addWidget(donebutton);
+  secondlayout->addWidget(cancelbutton);
+  mainlayout->addLayout(firstlayout);
+  mainlayout->addLayout(secondlayout);
+  setLayout(mainlayout);
+  setWindowTitle("URL Window");
 }

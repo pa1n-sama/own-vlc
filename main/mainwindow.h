@@ -39,6 +39,10 @@ public:
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void slidertovolume(int position);
     void volumetoslider(qreal position);
+    //turnning off the tab focusing
+    bool focusNextPrevChild(bool next) override{
+        return false;
+    }
 private:
     bool paused = false;
     bool fullscreened = false;
@@ -66,7 +70,7 @@ private:
     std::vector<QUrl> playlist;
     QList<QString> mcbuttons = {"BPause","BBack","BStop","BNext","BFullscreen","BPlaylist","BRepeating","BVolumeFull"};
     QList<QString> firstlayoutbuttons = {"Media","Playback","Audio","Video","Subtitle","Tools","View","Help"};
-    QList<QString> actionslist = {"open file","open folder"};
+    QList<QString> actionslist = {"open file","open folder","open media"};
 
 };
 

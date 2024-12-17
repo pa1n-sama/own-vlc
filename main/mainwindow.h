@@ -15,7 +15,7 @@
 #include <QMediaPlayer>
 #include <QKeyEvent>
 #include <QUrl>
-
+#include <QStackedLayout>
 
 
 
@@ -54,9 +54,10 @@ private:
     
     QLabel* image;
     QWidget *mainwidget;
+    QStackedLayout *stackedlayout;
     QVBoxLayout *mainlayout;
     QHBoxLayout *firstlayout;
-    QVBoxLayout *videolayout;
+    QHBoxLayout *videolayout;
     QHBoxLayout *thirdlayout;
     QHBoxLayout *fourthlayout;
     QMediaPlayer *player;

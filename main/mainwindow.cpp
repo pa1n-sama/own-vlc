@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     this->resize(750,500);
     
     //elements definition
+    stackedlayout = new QStackedLayout;
     player = new QMediaPlayer(this);
     audio = new QAudioOutput(this);
     video = new QVideoWidget(this);
@@ -27,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     mainwidget = new QWidget(this);
     mainlayout = new QVBoxLayout();
     firstlayout = new QHBoxLayout();
-    videolayout = new QVBoxLayout();
+    videolayout = new QHBoxLayout();
     thirdlayout = new QHBoxLayout();
     fourthlayout = new QHBoxLayout();
     currenttimer = new QLabel("--:--:--");
@@ -35,7 +36,11 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     volumeslider = new QSlider(Qt::Horizontal);
     volumeslider->setObjectName("volumeslider");
 
-    //align the buttons for the style
+
+    //adding margin for style
+    mainlayout->setContentsMargins(10,10,10,10);
+
+    //align the buttons for  style
     firstlayout->setAlignment(Qt::AlignLeft);
     fourthlayout->setAlignment(Qt::AlignLeft);
 
@@ -233,17 +238,18 @@ void MainWindow::fourthlayoutclick(int buttonindex){
         //if fullscreen button is clicked
         case 4:
             {if(fullscreened){
-                this->showNormal();
                 volumeslider->show();
                 currenttimer->show();
                 totaltimer->show();
                 videoslider->show();
+                mainlayout->setContentsMargins(10,10,10,10);
             }else{
                 this->showFullScreen();
                 volumeslider->hide();
                 currenttimer->hide();
                 totaltimer->hide();
                 videoslider->hide();
+                mainlayout->setContentsMargins(0,0,0,0);
             }
 
             for(int i=0;i<firstlayoutbuttons.size();i++){

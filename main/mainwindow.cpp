@@ -28,12 +28,16 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     mainwidget = new QWidget(this);
     mainlayout = new QVBoxLayout();
     firstlayout = new QHBoxLayout();
-    videolayout = new QHBoxLayout();
+    videolayout = new QGridLayout();
     thirdlayout = new QHBoxLayout();
     fourthlayout = new QHBoxLayout();
+    sublabel = new QLabel();
     currenttimer = new QLabel("--:--:--");
     totaltimer = new QLabel("--:--:--");
     volumeslider = new QSlider(Qt::Horizontal);
+
+    sublabel->setAlignment(Qt::AlignHCenter|Qt::AlignBottom);
+    sublabel->setObjectName("sublabel");
     volumeslider->setObjectName("volumeslider");
 
 
@@ -83,7 +87,11 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
         button->setObjectName(mcbuttons[j]);
         QPixmap pix("cache/icons/"+mcbuttons[j]+".png");
         button->setIcon(pix);
-        button->setIconSize(QSize(16,16));
+        if (button->objectName() == "BVolumeFull"){
+            button->setIconSize(QSize(20,20));
+        }else{
+            button->setIconSize(QSize(16,16));
+        }
         connect(button,&QPushButton::clicked,[this,j](){
             fourthlayoutclick(j);
         });
@@ -106,7 +114,8 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     video->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     
     //adding widgets to there layouts and the layous to the central widget
-    videolayout->addWidget(video);
+    videolayout->addWidget(sublabel,0,0);
+    videolayout->addWidget(video,0,0);
     thirdlayout->addWidget(currenttimer);
     thirdlayout->addWidget(videoslider);
     thirdlayout->addWidget(totaltimer);
@@ -420,9 +429,10 @@ void MainWindow::volumetoslider(qreal position){
     //changing the volum button icon basing on the volume state
     if(position*1000 == 0){
         searchbutton->setIcon(QPixmap("cache/icons/BMute.png"));
-
+        volumeslider->setStyleSheet("QSlider#volumeslider::handle{background:#1e1e1e;}");
     }else if (position*1000<=333 && position*1000>0){
         searchbutton->setIcon(QPixmap("cache/icons/BVolumeLow.png"));
+        volumeslider->setStyleSheet("QSlider#volumeslider::handle{background:#484949;}");
 
     }else if(position*1000>=333 && position*1000<=666){
         searchbutton->setIcon(QPixmap("cache/icons/BVolumeMid.png"));

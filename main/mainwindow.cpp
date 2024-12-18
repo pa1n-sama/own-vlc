@@ -202,6 +202,7 @@ void MainWindow::firstlayoutclick(int buttonindex){
             }
             break;
     }
+    this->setFocus();
 }
 
 //fourthlayout buttons logic
@@ -315,6 +316,7 @@ void MainWindow::fourthlayoutclick(int buttonindex){
             break;
         }
     }
+    this->setFocus();
 }
 
 

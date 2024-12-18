@@ -12,15 +12,22 @@ QToolButton{
 QToolButton:hover{
     background-color: #1e1e1e;
 }
-
 QLabel{
     color:white;
 }
+QLabel#sublabel{
+    font-size:20px;
+    background-color: transparent;
+}
+
 QPushButton{
     min-width:30px;
     min-height:30px;
     max-width: 30px;
     max-height: 30px;
+}
+QPushButton#BVolumeFull{
+    border:none;
 }
 QAction:hover{
     background-color:#363636;

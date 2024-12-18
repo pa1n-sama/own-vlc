@@ -57,10 +57,11 @@ private:
     QStackedLayout *stackedlayout;
     QVBoxLayout *mainlayout;
     QHBoxLayout *firstlayout;
-    QHBoxLayout *videolayout;
+    QGridLayout *videolayout;
     QHBoxLayout *thirdlayout;
     QHBoxLayout *fourthlayout;
     QMediaPlayer *player;
+    QLabel *sublabel;
     QAudioOutput *audio;
     QVideoWidget *video;
     QSlider *videoslider;

@@ -16,7 +16,7 @@
 #include <QKeyEvent>
 #include <QUrl>
 #include <QStackedLayout>
-
+#include <vector>
 
 
 class MainWindow: public QMainWindow{
@@ -39,6 +39,7 @@ public:
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void slidertovolume(int position);
     void volumetoslider(qreal position);
+    void subscraper(std::string subpath);
     //turnning off the tab focusing
     bool focusNextPrevChild(bool next) override{
         if(next){}
@@ -73,8 +74,15 @@ private:
     std::vector<QUrl> playlist;
     QList<QString> mcbuttons = {"BPause","BBack","BStop","BNext","BFullscreen","BPlaylist","BRepeating","BVolumeFull"};
     QList<QString> firstlayoutbuttons = {"Media","Playback","Audio","Video","Subtitle","Tools","View","Help"};
-    QList<QString> actionslist = {"open file","open folder","open media"};
+    QList<QList <QString> > actionslist = {{"open file","open folder","open media","quit"},{"Title","Jump Backward","Jump Forward","Jump to Time"},{"Full Volume","Mute"},{"Set Radio"},{"add subtitles"}};
+
+public:
+    std::vector <float> subtimer;
+    std::vector <std::string> sublines;
+    bool displayed=false;
+    int subcounter=0;
 
 };
 
 #endif
+//https://vo-live.cdb.cdn.orange.com/Content/Channel/NationalGeographicHDChannel/HLS/index.m3u8

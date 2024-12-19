@@ -1,3 +1,6 @@
+//add the ability to show the subtitle on top of the video
+//add the ability to read the 2 lines sub line
+#include <QApplication>
 #include <mainwindow.h>
 #include <mediaurl.h>
 #include <iomanip>
@@ -49,29 +52,35 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     fourthlayout->setAlignment(Qt::AlignLeft);
 
     //setting firstlayout toolbuttons with it's actions
-    int counter = 0;
-    for(int i=0;i<firstlayoutbuttons.size();i++){
-        QToolButton *button = new QToolButton(this);
-        button->setPopupMode(QToolButton::InstantPopup);
-        button->setText(firstlayoutbuttons[i]);
-        button->setObjectName(firstlayoutbuttons[i]);
-        connect(button,&QPushButton::clicked,[this,i](){
-            firstlayoutclick(i);
-        });
-        QMenu *menu = new QMenu(this); 
-        while(counter<actionslist.size()){
+    size_t counter=0;
+    for(size_t i=0;i<firstlayoutbuttons.size();i++){
+      //making toolbuttons basing on the elements of firstlayoutbuttons list
+      QToolButton *button = new QToolButton(this);
+      button->setPopupMode(QToolButton::InstantPopup);
+      button->setText(firstlayoutbuttons[i]);
+      button->setObjectName(firstlayoutbuttons[i]);
+      connect(button,&QPushButton::clicked,[this,i](){
+          firstlayoutclick(i);
+      });
+
+      //creat a menu for eachbutton
+      QMenu *menu = new QMenu(this);
+      if(actionslist.size()>i){
+      //loop the elements in actionslist of the i button 
+        for(size_t j=0;j<actionslist[i].size();j++){
             QAction *action = new QAction(this);
-            action->setObjectName(actionslist[counter]);
-            action->setText(actionslist[counter]);
-            connect(action,&QAction::triggered,[this,counter](){
-                firstlayoutclick(counter);
+            action->setObjectName(actionslist[i][j]);
+            action->setText(actionslist[i][j]);
+            connect(action,&QAction::triggered,[this,i,j,counter](){
+              firstlayoutclick(counter);
             });
             // connect these actions later
             menu->addAction(action);
             counter++;
         }
-        button->setMenu(menu);
-        firstlayout->addWidget(button);
+      }
+      button->setMenu(menu);
+      firstlayout->addWidget(button);
     }
 
     //setting fourthlayout pushbuttons
@@ -114,8 +123,8 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     video->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     
     //adding widgets to there layouts and the layous to the central widget
-    videolayout->addWidget(sublabel,0,0);
     videolayout->addWidget(video,0,0);
+    videolayout->addWidget(sublabel,1,0);
     thirdlayout->addWidget(currenttimer);
     thirdlayout->addWidget(videoslider);
     thirdlayout->addWidget(totaltimer);
@@ -167,40 +176,108 @@ void MainWindow::mediaplayer(QString url){
 //firstlayout buttons logic
 void MainWindow::firstlayoutclick(int buttonindex){
     QString url;
+    QString suburl;
     switch(buttonindex){
+        
         //if the user choose to open a file
-        case 0:
-            url = QFileDialog::getOpenFileName(this,tr("Select Video File"),"/home/pain/Downloads",tr("Mp4 files (*.mp4)"));
-            if(!url.isEmpty()){
-                mediaplayer(url);
-                playertype = "vid";
-            }
-            playlist.clear(); //clearing the playlist
-            break;
+        case 0:{
+          url = QFileDialog::getOpenFileName(this,tr("Select Video File"),"/home/pain/Downloads",tr("Mp4 files (*.mp4)"));
+          if(!url.isEmpty()){
+              mediaplayer(url);
+              playertype = "vid";
+          }
+          playlist.clear(); //clearing the playlist
+          break;
+        }
+
         //if the user choose to open a directory (playlist)
-        case 1:
-            url = QFileDialog::getExistingDirectory(this,tr("Setect Playlist Directory","/home/pain/Downloads", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks));
-            if(!url.isEmpty()){
-                
-                playlist.clear(); //clearing the playlist
-                //saving all the urls in a list
-                for(auto i : std::filesystem::directory_iterator(url.toStdString())){
-                    playlist.push_back(QUrl(QString::fromStdString(i.path())));
-                }
-                playertype = "playlist";
-                mediaplayer("play a list");
+        case 1:{
+          url = QFileDialog::getExistingDirectory(this,tr("Setect Playlist Directory","/home/pain/Downloads", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks));
+          if(!url.isEmpty()){
+              
+              playlist.clear(); //clearing the playlist
+              //saving all the urls in a list
+              for(auto i : std::filesystem::directory_iterator(url.toStdString())){
+                  playlist.push_back(QUrl(QString::fromStdString(i.path())));
+              }
+              playertype = "playlist";
+              mediaplayer("play a list");
             }
-            break;
-        case 2:
-            UrlWindow x;
-            x.exec();
-            url = x.url;
-            if(!url.isEmpty()){
-                playlist.clear();
-                playertype="vid";
-                mediaplayer(url);
-            }
-            break;
+          break;
+        }
+
+        //if the user choose to open a media file
+        case 2:{
+          //launching the constructor for url window input
+          UrlWindow x;
+          x.exec();
+          //getting the url inputed by the user
+          url = x.url;
+          //checking if the user set a url or not
+          if(!url.isEmpty()){
+              playlist.clear();
+              playertype="vid";
+              mediaplayer(url);
+          }
+          break;
+        }
+        //if the user choose to quit the app
+        case 3:{
+          QApplication::quit();
+          break;
+        }
+        
+        //getting the title of the video
+        case 4:{
+          break;
+        }
+        
+        //jump backward (player)
+        case 5:{
+          player->setPosition(player->position()-5000);
+          break;
+        }
+        
+        //jump forward (player)
+        case 6:{
+          player->setPosition(player->position()+5000);
+          break;
+        }
+        
+        //jump to a specific time
+        case 7:{
+          //setting a whole new window
+          break;
+        }
+        
+        //setting the audio to full volume
+        case 8:{
+          audio->setVolume(1);
+          break;
+        }
+        
+        //setting the audio to mute
+        case 9:{
+          audio->setVolume(0);
+          break;
+        }
+        
+        //set a video radio
+        case 10:{
+          //setting a whole new window
+          break;
+        }
+        
+        //if the user choose to open a sub file
+        case 11:{
+          suburl = QFileDialog::getOpenFileName(this,tr("Select Subtitle file"),"/home/pain",tr("Srt files (*.srt)"));
+          if(!suburl.isEmpty()){
+            subscraper(suburl.toStdString());
+          }
+          break;
+        }
+
+    //{{"open file","open folder","open media","quit"},{"Title","Jump Backward","Jump Forward","Jump to Time"},{"Full Volume","Mute"},{"Set Radio"},{"add subtitles"}};
     }
     this->setFocus();
 }
@@ -418,6 +495,17 @@ void MainWindow::setsliderposition(qint64 position){
         videoslider->setValue(0);
     }
 
+  //syncing subtitles to the player position 
+  //looping all the times that exist in the sub file
+  for(size_t i=0;i<subtimer.size();i+=2){
+    //checking if the player position is between the 2 times
+    if(subtimer[i]*1000<=position && subtimer[i+1]*1000>=position){
+      sublabel->setText(QString::fromStdString(sublines[i/2]));
+      break;
+    }else if(i==subtimer.size()-2){
+      sublabel->clear();
+    }
+  }
 }
 
 
@@ -446,7 +534,70 @@ void MainWindow::volumetoslider(qreal position){
     volumeslider->setSliderPosition(static_cast<int>(position*1000));
 }
 
+//scraping the subtitles from the sub file
+void MainWindow::subscraper(std::string subpath){
+  std::ifstream file(subpath);
+  std::string line;
 
+  //clearing the sub lists (so i can load a sub even when another is loaded)
+  subtimer.clear();
+  sublines.clear();
+  
+  //looping the lines in the file
+  while(getline(file,line)){
+    int lettercounter=0;
+    bool timefound=false;
+    //looping the characters in the line
+    while(line[lettercounter]!='\0'){
+      //if the line content the set of characters "-->"
+      if(line[lettercounter]=='-'&&line[lettercounter+1]=='-'&&line[lettercounter+2]=='>'){
+        //calculating the starting time from the string line (hour, minutes, seconds)
+        double fhour = ((line[0]-'0')*10 + (line[1]-'0'))*60*60;
+        double fmin = ((line[3]-'0')*10 + (line[4]-'0'))*60;
+        double fsec = (line[6]-'0')*10 + (line[7]-'0') +(line[9]-'0')*0.1 + (line[10]-'0')*0.01 + (line[11]-'0')*0.001;
+        double firsttime = fhour+fmin+fsec;
+
+        //calculating the ending time from the string line (hour, minutes, seconds)
+        double shour = ((line[17]-'0')*10 + (line[18]-'0'))*60*60;
+        double smin = ((line[20]-'0')*10 + (line[21]-'0'))*60;
+        double ssec = (line[23]-'0')*10 + (line[24]-'0') +(line[26]-'0')*0.1 + (line[27]-'0')*0.01 + (line[28]-'0')*0.001;
+        double secondtime = shour+smin+ssec;
+      
+        //adding the starting time and the end time in a list
+        subtimer.push_back(firsttime);
+        subtimer.push_back(secondtime);
+
+        //bool variable to know what does the line content (times in this case)
+        timefound=true;
+        break;
+      }
+      lettercounter+=1;
+    }
+
+  //if the line is after a time line
+    if(timefound){
+      //adding the sub lines to a list
+      std::string nextline;
+      std::string fulltext="";
+      //checking if there is a next line
+      while(getline(file,nextline)){
+        //checking if the line is empty
+        if(nextline.size()>2){
+          //if the line is not empty is will add it to a bandal
+          fulltext+=nextline+'\n';
+        }else{
+          //if the line is empty it will break (so only the subs are added to the variable(fulltext))
+          break;
+        }
+      }
+      //adding the subs to the list
+      sublines.push_back(fulltext);
+      timefound=false;
+    }
+  }
+}
+
+//constructor for the url window input 
 UrlWindow::UrlWindow(QWidget *parent):QDialog(parent){
   this->setFocus();
   QFile file("cache/styles/secondwindow.css");

@@ -429,6 +429,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 //setting the player position basing on the slider position
 void MainWindow::mediaposition(int position){
     player->setPosition(position);
+    this->setFocus();
+
 }
 
 //setting the range of the slider basing on the player
@@ -447,7 +449,6 @@ void MainWindow::setsliderposition(qint64 position){
         int hour = player->position()/(1000*60*60);
         int min = (player->position()/1000-hour*60*60)/60;
         int second = player->position()/1000-min*60-hour*60*60;
-        std::cout<<second<<std::endl;
         std::ostringstream osshour, ossmin, osssecond;
         osshour<<std::setfill('0')<<std::setw(2)<<hour;
         ossmin<<std::setfill('0')<<std::setw(2)<<min;

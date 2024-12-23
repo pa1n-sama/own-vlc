@@ -6,12 +6,16 @@ BASE_NAME=$(basename *.pro .pro)
 
 if [ ! -d "build" ]; then
     mkdir build
-    cp -r cache build
 fi
+
+if [ ! -d "$HOME/.config/VFW" ]; then
+    mkdir -p $HOME/.config/VFW
+    cp -r cache $HOME/.config/VFW
+fi
+
 cd build
 
-
-qmake ../*.pro
+qmake6 ../*.pro
 make clean
 make
 ./"$BASE_NAME"

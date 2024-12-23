@@ -17,6 +17,8 @@
 #include <QLabel>
 #include <QKeyEvent>
 #include <QFileDialog>
+#include <chrono>
+
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     this->setFocus();
@@ -94,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
         }
         QPushButton *button = new QPushButton(this);
         button->setObjectName(mcbuttons[j]);
-        QPixmap pix("cache/icons/"+mcbuttons[j]+".png");
+        QPixmap pix("/home/pain/.config/VFW/cache/icons/"+mcbuttons[j]+".png");
         button->setIcon(pix);
         if (button->objectName() == "BVolumeFull"){
             button->setIconSize(QSize(20,20));
@@ -124,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     
     //adding widgets to there layouts and the layous to the central widget
     videolayout->addWidget(video,0,0);
-    videolayout->addWidget(sublabel,1,0);
+    videolayout->addWidget(sublabel,0,0);
     thirdlayout->addWidget(currenttimer);
     thirdlayout->addWidget(videoslider);
     thirdlayout->addWidget(totaltimer);
@@ -290,10 +292,10 @@ void MainWindow::fourthlayoutclick(int buttonindex){
         case 0:
             {QPushButton *searchbutton = this->findChild<QPushButton *>("BPause");
             if(paused){
-                searchbutton->setIcon(QPixmap("cache/icons/BPause.png"));
+                searchbutton->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BPause.png"));
                 player->play();
             }else{
-                searchbutton->setIcon(QPixmap("cache/icons/BPlay.png"));
+                searchbutton->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BPlay.png"));
                 player->pause();
             }
             paused=!paused;
@@ -369,15 +371,15 @@ void MainWindow::fourthlayoutclick(int buttonindex){
             {QPushButton * sb = this->findChild<QPushButton*>("BRepeating");
             if(rep==PlaylistRepeat){
                 //repeat playlist
-                sb->setIcon(QPixmap("cache/icons/BRepeatingone.png"));
+                sb->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BRepeatingone.png"));
                 rep=VideoRepeat;
             }else if (rep==VideoRepeat){
                 //repeating one video
-                sb->setIcon(QPixmap("cache/icons/BSuffle.png"));
+                sb->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BSuffle.png"));
                 rep=Shuffle;
             }else if (rep==Shuffle){
                 //shuffle
-                sb->setIcon(QPixmap("cache/icons/BRepeating.png"));
+                sb->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BRepeating.png"));
                 rep=PlaylistRepeat;
             }
             break;
@@ -411,9 +413,60 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     }else if(event->key()==Qt::Key_Space){
        fourthlayoutclick(0);
     }else if(event->key()==Qt::Key_Right){
-        player->setPosition(player->position()+5000);
+
+        //calculating when was the last click (left or right)
+        std::chrono::duration<double> time = std::chrono::system_clock::now()-now;
+        //if the time is less then 500 ms  it will only increasing the position
+        if(time.count()<0.5){
+            player->setPosition(player->position()+5000);
+            player->pause();
+            player->play();
+        //if the time is more then 500 ms 
+        }else{
+            //saving the position of the player
+            int myposition = player->position();
+            player->stop();
+            //resetting the audio carrier so the audio will not break 
+            delete audio;
+            audio = new QAudioOutput(this);
+            //increasing the position of the player
+            player->setPosition(myposition+5000);
+            player->setAudioOutput(audio);
+            //pause and play the player to reset the player
+            player->pause();
+            player->play();
+
+        }
+        now = std::chrono::system_clock::now();
+
     }else if(event->key()==Qt::Key_Left){
-        player->setPosition(player->position()-5000);
+
+        //calculating when was the last click (left or right)
+        std::chrono::duration<double> time = std::chrono::system_clock::now()-now;
+        //if the time is less then 500 ms  it will only decrease the position
+        if(time.count()<0.5){
+            player->setPosition(player->position()-5000);
+            player->pause();
+            player->play();
+        //if the time is more then 500 ms 
+        }else{
+            //saving the position of the player
+            int myposition = player->position();
+            player->stop();
+            //resetting the audio carrier so the audio will not break 
+            delete audio;
+            audio = new QAudioOutput(this);
+            //decreasing the position of the player
+            player->setPosition(myposition-5000);
+            //addting the audio carrier to the player
+            player->setAudioOutput(audio);
+            //pause and play the player to reset the player
+            player->pause();
+            player->play();
+
+        }
+        now = std::chrono::system_clock::now();
+
     }else if(event->key()==Qt::Key_Up){
         audio->setVolume(audio->volume()+0.1);
         volumeslider->setSliderPosition(volumeslider->sliderPosition()+0.1);
@@ -428,7 +481,30 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 
 //setting the player position basing on the slider position
 void MainWindow::mediaposition(int position){
-    player->setPosition(position);
+
+    //calculate the time of the between the last change of position and now
+    std::chrono::duration<double> time = std::chrono::system_clock::now()-now;
+    //if the time is less then 500 ms  it will only change the position
+    if(time.count()<0.5){
+        player->setPosition(position);
+        player->pause();
+        player->play();
+    //if the time is more then 500 ms 
+    }else{
+        //saving the position of the player
+        player->stop();
+        //resetting the audio carrier so the audio will not break 
+        delete audio;
+        audio = new QAudioOutput(this);
+        //change the position of the player
+        player->setPosition(position);
+        player->setAudioOutput(audio);
+        //pause and play the player to reset the player
+        player->pause();
+        player->play();
+
+    }
+    now = std::chrono::system_clock::now();
     this->setFocus();
 
 }
@@ -520,17 +596,17 @@ void MainWindow::volumetoslider(qreal position){
 
     //changing the volum button icon basing on the volume state
     if(position*1000 == 0){
-        searchbutton->setIcon(QPixmap("cache/icons/BMute.png"));
+        searchbutton->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BMute.png"));
         volumeslider->setStyleSheet("QSlider#volumeslider::handle{background:#1e1e1e;}");
     }else if (position*1000<=333 && position*1000>0){
-        searchbutton->setIcon(QPixmap("cache/icons/BVolumeLow.png"));
+        searchbutton->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BVolumeLow.png"));
         volumeslider->setStyleSheet("QSlider#volumeslider::handle{background:#484949;}");
 
     }else if(position*1000>=333 && position*1000<=666){
-        searchbutton->setIcon(QPixmap("cache/icons/BVolumeMid.png"));
+        searchbutton->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BVolumeMid.png"));
 
     }else if(position*1000>=666){
-        searchbutton->setIcon(QPixmap("cache/icons/BVolumeFull.png"));
+        searchbutton->setIcon(QPixmap("/home/pain/.config/VFW/cache/icons/BVolumeFull.png"));
 
     }
     volumeslider->setSliderPosition(static_cast<int>(position*1000));
@@ -599,37 +675,4 @@ void MainWindow::subscraper(std::string subpath){
   }
 }
 
-//constructor for the url window input 
-UrlWindow::UrlWindow(QWidget *parent):QDialog(parent){
-  this->setFocus();
-  QFile file("cache/styles/secondwindow.css");
-  if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      QTextStream in(&file);
-      QString styleSheet = in.readAll();
-      this->setStyleSheet(styleSheet);
-  }
-  this->setFixedSize(800,500);
-  mainlayout = new QVBoxLayout;
-  firstlayout = new QHBoxLayout;
-  secondlayout = new QHBoxLayout;
-  urllabel = new QLabel("URL: ");
-  urlentry = new QTextEdit;
-  donebutton = new QPushButton("OK");
-  donebutton->setObjectName("okbutton");
-  cancelbutton=new QPushButton("Cancel");
-  connect(donebutton,&QPushButton::clicked,[this](){
-    url = urlentry->toPlainText();
-    QDialog::accept();
-  });
-  connect(cancelbutton,&QPushButton::clicked,[this](){
-    QDialog::accept();
-  });
-  firstlayout->addWidget(urllabel);
-  firstlayout->addWidget(urlentry);
-  secondlayout->addWidget(donebutton);
-  secondlayout->addWidget(cancelbutton);
-  mainlayout->addLayout(firstlayout);
-  mainlayout->addLayout(secondlayout);
-  setLayout(mainlayout);
-  setWindowTitle("URL Window");
-}
+

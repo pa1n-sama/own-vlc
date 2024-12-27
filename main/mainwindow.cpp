@@ -420,7 +420,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     }else if(event->key()  == Qt::Key_F){
        fourthlayoutclick(4);
     }else if(event->key()  == Qt::Key_M){
-       fourthlayoutclick(7);
+       fourthlayoutclick(BVolumeControl);
     }else if(event->key()==Qt::Key_Space){
        fourthlayoutclick(0);
     }else if(event->key()==Qt::Key_Right){

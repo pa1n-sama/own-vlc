@@ -10,7 +10,7 @@ fi
 
 if [ ! -d "$HOME/.config/VFW" ]; then
     mkdir -p $HOME/.config/VFW
-    cp -r cache $HOME/.config/VFW
+    cp -r ../cache $HOME/.config/VFW
 fi
 
 cd build

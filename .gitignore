@@ -1,2 +1,2 @@
-./main/build/
-.gitignore
+*/main/build/
+*.vscode

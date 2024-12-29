@@ -30,11 +30,12 @@ public:
     enum FIRSTLAYOUT_LABEL_ELEMENTS{
         PAUSE_BUTTON = 0,
         BACK_BUTTON = 1,
-        NEXT_BUTTON = 2,
-        FULLSCREEN_BUTTON = 3,
-        PLAYLIST_BUTTON = 4,
-        REPEATION_BUTTON = 5,
-        BVolumeControl = 6,
+        STOP_BUTTON = 2,
+        NEXT_BUTTON = 3,
+        FULLSCREEN_BUTTON = 4,
+        PLAYLIST_BUTTON = 5,
+        REPETITION_BUTTON = 6,
+        BVolumeControl = 7,
     };
     enum FOURTHLAYOUT_LABEL_ELEMENTS{
         Open_file = 0,

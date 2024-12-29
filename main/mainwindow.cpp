@@ -320,7 +320,7 @@ void MainWindow::fourthlayoutclick(int buttonindex){
             
 
         //if the stop button is clicked
-        case NEXT_BUTTON:
+        case STOP_BUTTON:
             {player->setSource(QUrl("blackscreen"));
             currenttimer->setText("--:--:--");
             totaltimer ->setText("--:--:--");
@@ -329,13 +329,13 @@ void MainWindow::fourthlayoutclick(int buttonindex){
             break;}
         
         //if the next video button is clicked
-        case FULLSCREEN_BUTTON:
+        case NEXT_BUTTON:
             {if(playertype=="playlist"){
             //we set the player to the end of the video so it trigger the logic in the lines (326,...354)
             player->setPosition(player->duration());}
             break;}
         //if fullscreen button is clicked
-        case PLAYLIST_BUTTON:
+        case FULLSCREEN_BUTTON:
             {if(fullscreened){
                 volumeslider->show();
                 currenttimer->show();
@@ -376,8 +376,12 @@ void MainWindow::fourthlayoutclick(int buttonindex){
             break;
         }
         
+        case PLAYLIST_BUTTON:{
+            //showing the full playlist that is playing
+        }
+        
         //if reloading behavior is clicked 
-        case REPEATION_BUTTON:
+        case REPETITION_BUTTON:
             {QPushButton * sb = this->findChild<QPushButton*>("BRepeating");
             if(rep==PlaylistRepeat){
                 //repeat playlist

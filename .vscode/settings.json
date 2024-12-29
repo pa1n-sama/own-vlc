@@ -79,8 +79,6 @@
         "qaudiooutput": "cpp",
         "qapplication": "cpp",
         "filesystem": "cpp",
-        "qmediaplayer": "cpp",
-        "qlist": "cpp",
-        "qstring": "cpp"
+        "qmediaplayer": "cpp"
     }
 }

@@ -266,13 +266,13 @@ void MainWindow::firstlayoutclick(int buttonindex){
         
         //setting the audio to full volume
         case FULL_VOLUME:{
-          audio->setVolume(1);
+          volumetoslider(1);
           break;
         }
         
         //setting the audio to mute
         case MUTE:{
-          audio->setVolume(0);
+          volumetoslider(0);
           break;
         }
         

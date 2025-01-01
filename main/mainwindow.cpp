@@ -12,12 +12,15 @@
 #include <fstream>
 #include <QAction>
 #include <QMediaPlayer>
-#include <QVideoWidget>
 #include <QAudioOutput>
 #include <QLabel>
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <chrono>
+#include <QGraphicsTextItem>
+#include <QGraphicsVideoItem>
+#include <QGraphicsView>
+#include <QGraphicsScene>
 
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
@@ -25,23 +28,31 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     this->resize(750,500);
     
     //elements definition
-    stackedlayout = new QStackedLayout;
     player = new QMediaPlayer(this);
     audio = new QAudioOutput(this);
-    video = new QVideoWidget(this);
-    videoslider = new QSlider(Qt::Horizontal);
+
+    video = new QGraphicsVideoItem();
+    scene = new QGraphicsScene(this);
+    view = new QGraphicsView(scene,this);
+
     mainwidget = new QWidget(this);
     mainlayout = new QVBoxLayout();
     firstlayout = new QHBoxLayout();
     videolayout = new QGridLayout();
     thirdlayout = new QHBoxLayout();
     fourthlayout = new QHBoxLayout();
-    sublabel = new QLabel();
+    videoslider = new QSlider(Qt::Horizontal);
+
+    QFont font;
+    sublabel = new QGraphicsTextItem();
+    sublabel->setDefaultTextColor(Qt::white);
+    font.setPointSize(14);
+    sublabel->setFont(font);
+    
     currenttimer = new QLabel("--:--:--");
     totaltimer = new QLabel("--:--:--");
     volumeslider = new QSlider(Qt::Horizontal);
 
-    sublabel->setAlignment(Qt::AlignHCenter|Qt::AlignBottom);
     sublabel->setObjectName("sublabel");
     volumeslider->setObjectName("volumeslider");
 
@@ -121,12 +132,16 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     connect(player,&QMediaPlayer::durationChanged,this,&MainWindow::setsliderrange);
     connect(videoslider,&QSlider::sliderMoved,this,&MainWindow::mediaposition);
 
-    //setting videowidget parametres
-    video->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    
+    //setting QGraphics parametres
+    video->setSize(view->size());
+    view->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scene->addItem(video);
+    scene->addItem(sublabel);
     //adding widgets to there layouts and the layous to the central widget
-    videolayout->addWidget(video,0,0);
-    videolayout->addWidget(sublabel,0,0);
+    videolayout->addWidget(view);
     thirdlayout->addWidget(currenttimer);
     thirdlayout->addWidget(videoslider);
     thirdlayout->addWidget(totaltimer);
@@ -144,6 +159,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
 void MainWindow::mediaplayer(QString url){
 
     //if there is no video to play a black image will play (blackscreen)
+    video->setSize(view->size());
     if(videoindex>playlist.size()||url=="blackscreen") {
         player->setSource(QUrl("blackscreen"));
         currenttimer->setText("--:--:--");
@@ -337,11 +353,13 @@ void MainWindow::fourthlayoutclick(int buttonindex){
         //if fullscreen button is clicked
         case FULLSCREEN_BUTTON:
             {if(fullscreened){
+                this->showMaximized();
                 volumeslider->show();
                 currenttimer->show();
                 totaltimer->show();
                 videoslider->show();
                 mainlayout->setContentsMargins(10,10,10,10);
+
             }else{
                 this->showFullScreen();
                 volumeslider->hide();
@@ -349,6 +367,8 @@ void MainWindow::fourthlayoutclick(int buttonindex){
                 totaltimer->hide();
                 videoslider->hide();
                 mainlayout->setContentsMargins(0,0,0,0);
+                video->setSize(this->size());
+                view->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
             }
 
             for(int i=0;i<firstlayoutbuttons.size();i++){
@@ -595,10 +615,10 @@ void MainWindow::setsliderposition(qint64 position){
   for(size_t i=0;i<subtimer.size();i+=2){
     //checking if the player position is between the 2 times
     if(subtimer[i]*1000<=position && subtimer[i+1]*1000>=position){
-      sublabel->setText(QString::fromStdString(sublines[i/2]));
+      sublabel->setPlainText(QString::fromStdString(sublines[i/2]));
       break;
     }else if(i==subtimer.size()-2){
-      sublabel->clear();
+      sublabel->setPlainText("");
     }
   }
 }
@@ -690,4 +710,12 @@ void MainWindow::subscraper(std::string subpath){
       timefound=false;
     }
   }
+}
+
+
+void MainWindow:: resizeEvent(QResizeEvent * event){
+    QMainWindow::resizeEvent(event);
+    video->setSize(QSize(view->size().width()+2,view->size().height()+2));
+    scene->setSceneRect(0,0,view->size().width()-1,view->size().height()-1);
+    view->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
 }

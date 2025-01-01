@@ -17,6 +17,10 @@
 #include <QUrl>
 #include <QStackedLayout>
 #include <vector>
+#include <QGraphicsTextItem>
+#include <QGraphicsVideoItem>
+#include <QGraphicsView>
+#include <QGraphicsScene>
 
 
 class MainWindow: public QMainWindow{
@@ -63,6 +67,7 @@ public:
     void slidertovolume(int position);
     void volumetoslider(qreal position);
     void subscraper(std::string subpath);
+    void resizeEvent(QResizeEvent * event);
     //turnning off the tab focusing
     bool focusNextPrevChild(bool next) override{
         if(next){}
@@ -85,9 +90,11 @@ private:
     QHBoxLayout *thirdlayout;
     QHBoxLayout *fourthlayout;
     QMediaPlayer *player;
-    QLabel *sublabel;
+    QGraphicsTextItem *sublabel;
     QAudioOutput *audio;
-    QVideoWidget *video;
+    QGraphicsVideoItem *video;
+    QGraphicsView *view;
+    QGraphicsScene *scene;
     QSlider *videoslider;
     QSlider *volumeslider;
     QLabel *currenttimer;

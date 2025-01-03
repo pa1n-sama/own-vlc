@@ -80,6 +80,7 @@
         "qapplication": "cpp",
         "filesystem": "cpp",
         "qmediaplayer": "cpp",
-        "qgraphicsview": "cpp"
+        "qgraphicsview": "cpp",
+        "qspinbox": "cpp"
     }
 }

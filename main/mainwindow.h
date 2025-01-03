@@ -54,6 +54,8 @@ public:
         MUTE = 9,
         SET_RADIO = 10,
         ADDSUB = 11,
+        STOPSUB = 12,
+        SUBSETTINGS = 13,
     };
     MainWindow(QWidget *parent=nullptr);
     void firstlayoutclick(int buttonindex);
@@ -105,7 +107,7 @@ private:
     std::vector<QUrl> playlist;
     QList<QString> mcbuttons = {"BPause","BBack","BStop","BNext","BFullscreen","BPlaylist","BRepeating","BVolumeControl"};
     QList<QString> firstlayoutbuttons = {"Media","Playback","Audio","Video","Subtitle","Tools","View","Help"};
-    QList<QList <QString> > actionslist = {{"open file","open folder","open media","quit"},{"Title","Jump Backward","Jump Forward","Jump to Time"},{"Full Volume","Mute"},{"Set Radio"},{"add subtitles"}};
+    QList<QList <QString> > actionslist = {{"Open File","Open Folder","Open Media","Quit"},{"Title","Jump Backward","Jump Forward","Jump to Time"},{"Full Volume","Mute"},{"Set Radio"},{"Add Subtitles","Stop Subtitles","Subtitle Settings"}};
 
 public:
     std::vector <float> subtimer;

@@ -3,6 +3,7 @@
 #include <mainwindow.h>
 #include <mediaurl.h>
 #include <jumptotime.h>
+#include <subconfig.h>
 #include <iomanip>
 #include <iostream>
 #include <QHBoxLayout>
@@ -26,7 +27,6 @@
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     this->setFocus();
     this->resize(750,500);
-    
     //elements definition
     player = new QMediaPlayer(this);
     audio = new QAudioOutput(this);
@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
     QFont font;
     sublabel = new QGraphicsTextItem();
     sublabel->setDefaultTextColor(Qt::white);
-    font.setPointSize(14);
+    font.setPointSize(24);
     sublabel->setFont(font);
     
     currenttimer = new QLabel("--:--:--");
@@ -154,6 +154,8 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
 
     //showing a blackscreen
     mediaplayer("blackscreen");
+    //refresh the size of the window 
+    resize(this->size());
 }
 
 void MainWindow::mediaplayer(QString url){
@@ -305,6 +307,19 @@ void MainWindow::firstlayoutclick(int buttonindex){
             subscraper(suburl.toStdString());
           }
           break;
+        }
+        case STOPSUB:{
+            subtimer.clear();
+            sublines.clear();
+            break;
+        }
+        case SUBSETTINGS:{
+            SubConfig win;
+            win.exec();
+            if(!win.HtmlScript.isEmpty()){
+                sublabel->setHtml(win.HtmlScript);
+            }
+            break;
         }
     }
     this->setFocus();
@@ -715,7 +730,14 @@ void MainWindow::subscraper(std::string subpath){
 
 void MainWindow:: resizeEvent(QResizeEvent * event){
     QMainWindow::resizeEvent(event);
-    video->setSize(QSize(view->size().width()+2,view->size().height()+2));
-    scene->setSceneRect(0,0,view->size().width()-1,view->size().height()-1);
+    int VIEWWIDTH = view->size().width();
+    int VIEWHEIGHT = view->size().height();
+    
+    video->setSize(QSize(VIEWWIDTH+2,VIEWHEIGHT+2));
+    scene->setSceneRect(0,0,VIEWWIDTH-1,VIEWHEIGHT-1);
     view->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    
+    int SUBWIDTH = sublabel->boundingRect().width();
+    int SUBHEIGHT = sublabel->boundingRect().height();
+    sublabel->setPos((VIEWWIDTH-SUBWIDTH)/2,(VIEWHEIGHT-SUBHEIGHT/2)-60);
 }

@@ -69,6 +69,8 @@ public:
     void slidertovolume(int position);
     void volumetoslider(qreal position);
     void subscraper(std::string subpath);
+    QString fixhtml(QString test);
+
     void resizeEvent(QResizeEvent * event);
     //turnning off the tab focusing
     bool focusNextPrevChild(bool next) override{
@@ -102,6 +104,7 @@ private:
     QLabel *currenttimer;
     QLabel *totaltimer;
     qreal oldvolume;
+    bool changesubposition = true;
     std::chrono::time_point<std::chrono::system_clock> now;
     
     std::vector<QUrl> playlist;
@@ -110,6 +113,9 @@ private:
     QList<QList <QString> > actionslist = {{"Open File","Open Folder","Open Media","Quit"},{"Title","Jump Backward","Jump Forward","Jump to Time"},{"Full Volume","Mute"},{"Set Radio"},{"Add Subtitles","Stop Subtitles","Subtitle Settings"}};
 
 public:
+    QString htmlstyle;
+    int subpadding;
+    int submarginbottom;
     std::vector <float> subtimer;
     std::vector <std::string> sublines;
     bool displayed=false;

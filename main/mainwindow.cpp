@@ -154,8 +154,12 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent){
 
     //showing a blackscreen
     mediaplayer("blackscreen");
-    //refresh the size of the window 
-    resize(this->size());
+    
+    //load the sub style
+    SubConfig win;
+    htmlstyle = win.makehtml();
+    subpadding = win.padding;
+    submarginbottom = win.marginbottom;
 }
 
 void MainWindow::mediaplayer(QString url){
@@ -308,18 +312,23 @@ void MainWindow::firstlayoutclick(int buttonindex){
           }
           break;
         }
+        
+        //if the user choose to not show a sub 
         case STOPSUB:{
-            subtimer.clear();
-            sublines.clear();
-            break;
+          subtimer.clear();
+          sublines.clear();
+          break;
         }
+
+        //if the user choose to custumize the sub
         case SUBSETTINGS:{
-            SubConfig win;
-            win.exec();
-            if(!win.HtmlScript.isEmpty()){
-                sublabel->setHtml(win.HtmlScript);
-            }
-            break;
+          SubConfig win;
+          win.gui();
+          win.exec();
+          htmlstyle = win.makehtml();
+          subpadding = win.padding;
+          submarginbottom = win.marginbottom;
+          break;
         }
     }
     this->setFocus();
@@ -630,10 +639,26 @@ void MainWindow::setsliderposition(qint64 position){
   for(size_t i=0;i<subtimer.size();i+=2){
     //checking if the player position is between the 2 times
     if(subtimer[i]*1000<=position && subtimer[i+1]*1000>=position){
-      sublabel->setPlainText(QString::fromStdString(sublines[i/2]));
+        //getting the size of the view and the sub
+        sublabel->setOpacity(1);
+        //adding 100ms delay to the sub apearence until the sub is fully randered
+        if(subtimer[i]*1000<=position && subtimer[i]*1000+100>position){
+            sublabel->setOpacity(0);
+        }
+        int VIEWWIDTH = view->size().width();
+        int VIEWHEIGHT = view->size().height();
+        int SUBWIDTH = sublabel->boundingRect().width();
+        int SUBHEIGHT = sublabel->boundingRect().height();
+        //posetioning the sub on the correct spot
+        sublabel->setPos((VIEWWIDTH-SUBWIDTH)/2,(VIEWHEIGHT-SUBHEIGHT/2)-submarginbottom);
+      
+
+      //if the media is in the targeted position we merge the html style with the subtitle and pass it as html script
+      sublabel->setHtml(htmlstyle + QString::fromStdString(sublines[i/2]) + "</div>");
       break;
     }else if(i==subtimer.size()-2){
-      sublabel->setPlainText("");
+      //if the media is not in a target position we pass an empty string
+      sublabel->setHtml("");
     }
   }
 }
@@ -739,5 +764,5 @@ void MainWindow:: resizeEvent(QResizeEvent * event){
     
     int SUBWIDTH = sublabel->boundingRect().width();
     int SUBHEIGHT = sublabel->boundingRect().height();
-    sublabel->setPos((VIEWWIDTH-SUBWIDTH)/2,(VIEWHEIGHT-SUBHEIGHT/2)-60);
+    sublabel->setPos((VIEWWIDTH-SUBWIDTH)/2,(VIEWHEIGHT-SUBHEIGHT/2)-submarginbottom);
 }

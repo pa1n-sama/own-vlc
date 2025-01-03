@@ -1,14 +1,10 @@
 {
-  "margin-bottom":60,
-  "padding":10,
-  "border-color":"#ffffff",
-  "border-weight":"",
-
-  "background-color":"#000000",
-  "background-opacity":0,
-
-  "font-size":24,
-  "font-familly":"sans",
-  "font-color":"#ffffff",
-  "font-opacity":1
+          "bg-color": "#000000",
+          "bg-opacity": 20,
+          "font-color": "#ffffff",
+          "font-familly": "JetBrains",
+          "font-opacity": 100,
+          "font-size": 24,
+          "margin-bottom": 60,
+          "padding": 26
 }
